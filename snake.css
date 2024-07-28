@@ -18,7 +18,7 @@
 }
 
 #scoreText, #levelText {
-    font-size: 40px;
+    font-size: 30px;
 }
 
 #controls {
@@ -29,18 +29,19 @@
 
 button {
     font-family: "Permanent Marker", cursive;
-    font-size: 22px;
-    width: 150px;
+    font-size: 20px;
+    width: 100px;
     height: 60px;
     border: 4px solid;
     border-radius: 15px;
     cursor: pointer;
     margin: 5px;
+    display: inline;
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 500px) {
     #scoreText, #levelText {
-        font-size: 30px;
+        font-size: 20px;
     }
 
     button {
