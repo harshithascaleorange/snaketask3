@@ -11,7 +11,7 @@ const boardBackground = "black";
 const snakeColor = "lightgreen";
 const snakeBorder = "black";
 const foodColor = "red";
-const unitSize = 25;
+const unitSize = 20; // Adjust unit size for smaller board
 let running = false;
 let xVelocity = unitSize;
 let yVelocity = 0;
@@ -23,6 +23,10 @@ let speed = 200;
 let snake = [{ x: 0, y: 0 }];
 let levelCompleted = false;
 let paused = false;
+let touchStartX = 0;
+let touchStartY = 0;
+let touchEndX = 0;
+let touchEndY = 0;
 
 window.addEventListener("keydown", changeDirection);
 resetBtn.addEventListener("click", resetGame);
@@ -31,6 +35,11 @@ decreaseSpeedBtn.addEventListener("click", () => adjustSpeed(25));
 pauseBtn.addEventListener("click", pauseGame);
 resumeBtn.addEventListener("click", resumeGame);
 window.addEventListener("resize", resizeCanvas);
+
+// Add touch event listeners for swipe gestures
+gameBoard.addEventListener("touchstart", handleTouchStart, false);
+gameBoard.addEventListener("touchmove", handleTouchMove, false);
+gameBoard.addEventListener("touchend", handleTouchEnd, false);
 
 loadGameState();
 gameStart();
@@ -225,7 +234,7 @@ function loadGameState() {
 }
 
 function displayLevelCompleted() {
-    ctx.font = "8vw MV Boli"; // Use viewport width units
+    ctx.font = "10vw MV Boli"; // Use viewport width units
     ctx.fillStyle = "white";
     ctx.textAlign = "center";
     ctx.fillText(`Level ${level - 1} Completed!`, gameBoard.width / 2, gameBoard.height / 2);
@@ -247,11 +256,54 @@ function resumeGame() {
     nextTick();
 }
 
+// Handle touch start
+function handleTouchStart(event) {
+    const firstTouch = event.touches[0];
+    touchStartX = firstTouch.clientX;
+    touchStartY = firstTouch.clientY;
+}
+
+// Handle touch move
+function handleTouchMove(event) {
+    const firstTouch = event.touches[0];
+    touchEndX = firstTouch.clientX;
+    touchEndY = firstTouch.clientY;
+}
+
+// Handle touch end
+function handleTouchEnd() {
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
+
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        // Horizontal swipe
+        if (deltaX > 0 && xVelocity === 0) {
+            // Swipe right
+            xVelocity = unitSize;
+            yVelocity = 0;
+        } else if (deltaX < 0 && xVelocity === 0) {
+            // Swipe left
+            xVelocity = -unitSize;
+            yVelocity = 0;
+        }
+    } else {
+        // Vertical swipe
+        if (deltaY > 0 && yVelocity === 0) {
+            // Swipe down
+            xVelocity = 0;
+            yVelocity = unitSize;
+        } else if (deltaY < 0 && yVelocity === 0) {
+            // Swipe up
+            xVelocity = 0;
+            yVelocity = -unitSize;
+        }
+    }
+}
+
+// Resize canvas to fit container
 function resizeCanvas() {
-    const containerWidth = document.getElementById('gameContainer').clientWidth;
-    gameBoard.width = containerWidth - 20; // Sub
-    gameBoard.height = gameBoard.width; // Make it square
-    console.log(`Canvas resized to: ${gameBoard.width} x ${gameBoard.height}`);
-    drawSnake();
-    drawFood();
+    const containerWidth = gameBoard.parentElement.clientWidth;
+    const newSize = Math.min(containerWidth, 300); // Limit max size to 300px
+    gameBoard.width = newSize;
+    gameBoard.height = newSize;
 }
