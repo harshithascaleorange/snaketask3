@@ -182,7 +182,7 @@ function checkGameOver() {
 }
 
 function displayGameOver() {
-    ctx.font = "10vw MV Boli"; // Use viewport width units
+    ctx.font = "5vw MV Boli"; // Use viewport width units
     ctx.fillStyle = "white";
     ctx.textAlign = "center";
     ctx.fillText("GAME OVER!", gameBoard.width / 2, gameBoard.height / 2);
@@ -234,7 +234,7 @@ function loadGameState() {
 }
 
 function displayLevelCompleted() {
-    ctx.font = "10vw MV Boli"; // Use viewport width units
+    ctx.font = "5vw MV Boli"; // Use viewport width units
     ctx.fillStyle = "white";
     ctx.textAlign = "center";
     ctx.fillText(`Level ${level - 1} Completed!`, gameBoard.width / 2, gameBoard.height / 2);
@@ -303,7 +303,10 @@ function handleTouchEnd() {
 // Resize canvas to fit container
 function resizeCanvas() {
     const containerWidth = gameBoard.parentElement.clientWidth;
-    const newSize = Math.min(containerWidth, 300); // Limit max size to 300px
+    const newSize = Math.min(containerWidth, 600); // Limit max size to 300px
     gameBoard.width = newSize;
     gameBoard.height = newSize;
+    clearBoard();
+    drawFood();
+    drawSnake();
 }
